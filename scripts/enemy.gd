@@ -241,12 +241,23 @@ func _drop_loot() -> void:
 		var p: Node = players[0]
 		if p.has_method("get_loot_chance_pct"):
 			loot_mult += float(p.get_loot_chance_pct()) / 100.0
+	var awarded_slots: Dictionary = {}
 	for entry in drop_table:
-		var chance: float = float(entry.get("chance", 0.0)) * loot_mult
+		var id: String = str(entry.get("id", ""))
+		if id == "":
+			continue
+		var item: Dictionary = ItemDB.get_item(id)
+		if bool(item.get("no_drop", false)):
+			continue
+		var grade: String = str(item.get("grade", ""))
+		var chance: float = float(entry.get("chance", 0.0)) * loot_mult * GradeDB.get_drop_mult(grade)
 		if randf() < chance:
-			var id: String = str(entry.get("id", ""))
-			if id != "":
-				_spawn_world_item(LootConfig.roll_instance(id))
+			var slot: String = str(item.get("slot", ""))
+			if slot != "" and slot != "potion" and item.get("type", "") != "potion":
+				if awarded_slots.has(slot):
+					continue
+				awarded_slots[slot] = true
+			_spawn_world_item(LootConfig.roll_instance(id))
 
 func _spawn_world_item(instance: Dictionary) -> void:
 	var wi := Area2D.new()

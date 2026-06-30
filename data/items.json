@@ -2,6 +2,7 @@
   {
     "id": "sword_starter",
     "name": "Тренировочный меч",
+    "no_drop": true,
     "grade": "NG",
     "type": "weapon",
     "slot": "weapon",
@@ -22,6 +23,7 @@
   {
     "id": "bow_starter",
     "name": "Самодельный лук",
+    "no_drop": true,
     "grade": "NG",
     "type": "weapon",
     "slot": "weapon",
@@ -42,6 +44,7 @@
   {
     "id": "wand_starter",
     "name": "Учебный жезл",
+    "no_drop": true,
     "grade": "NG",
     "type": "weapon",
     "slot": "weapon",

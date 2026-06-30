@@ -12,7 +12,8 @@ func _ready() -> void:
 			var item: Dictionary = entry
 			var item_id: String = str(item.get("id", ""))
 			items[item_id] = item
-			_ids.append(item_id)
+			if not bool(item.get("no_drop", false)):
+				_ids.append(item_id)
 
 func get_item(id: String) -> Dictionary:
 	var result: Dictionary = items.get(id, {})

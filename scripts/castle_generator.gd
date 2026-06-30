@@ -799,10 +799,22 @@ func _build_chest(cell: Vector2i) -> void:
 		drop_chance *= 1.0 + float(player.get_loot_chance_pct()) / 100.0
 
 	var loot: Array[Dictionary] = []
+	var chest_slots: Dictionary = {}
 	for _i in LootConfig.rolls_per_chest:
 		if rng.randf() < drop_chance:
 			var id := ItemDB.random_id()
-			if id != "": loot.append(LootConfig.roll_instance(id))
+			if id == "":
+				continue
+			var item: Dictionary = ItemDB.get_item(id)
+			var grade: String = str(item.get("grade", ""))
+			if grade != "" and rng.randf() >= GradeDB.get_drop_mult(grade):
+				continue
+			var slot: String = str(item.get("slot", ""))
+			if slot != "" and item.get("type", "") != "potion":
+				if chest_slots.has(slot):
+					continue
+				chest_slots[slot] = true
+			loot.append(LootConfig.roll_instance(id))
 	chest.loot_items = loot
 
 	var spr := Sprite2D.new(); spr.name = "Sprite2D"; spr.centered = false

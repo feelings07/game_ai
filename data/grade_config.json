@@ -1,8 +1,8 @@
 {
-  "NG": {"level_req": 1,  "color": "#999999"},
-  "D":  {"level_req": 5,  "color": "#88ee88"},
-  "C":  {"level_req": 10, "color": "#88aaff"},
-  "B":  {"level_req": 20, "color": "#ffaa22"},
-  "A":  {"level_req": 25, "color": "#ff4444"},
-  "S":  {"level_req": 30, "color": "#ffdd00"}
+  "NG": {"level_req": 1,  "color": "#999999", "drop_mult": 1.00},
+  "D":  {"level_req": 5,  "color": "#88ee88", "drop_mult": 0.55},
+  "C":  {"level_req": 10, "color": "#88aaff", "drop_mult": 0.30},
+  "B":  {"level_req": 20, "color": "#ffaa22", "drop_mult": 0.12},
+  "A":  {"level_req": 25, "color": "#ff4444", "drop_mult": 0.05},
+  "S":  {"level_req": 30, "color": "#ffdd00", "drop_mult": 0.02}
 }

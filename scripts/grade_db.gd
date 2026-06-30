@@ -15,3 +15,9 @@ func get_level_req(grade: String) -> int:
 func get_color(grade: String) -> String:
 	var g: Dictionary = _grades.get(grade, {})
 	return str(g.get("color", "#999999"))
+
+func get_drop_mult(grade: String) -> float:
+	if grade == "":
+		return 1.0
+	var g: Dictionary = _grades.get(grade, {})
+	return float(g.get("drop_mult", 1.0))
