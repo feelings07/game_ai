@@ -5,6 +5,7 @@ signal player_died
 signal restart_requested
 
 var _ui_count: int = 0
+var nav_grid: AStarGrid2D = null
 
 func open_ui() -> void:
 	_ui_count += 1

@@ -38,10 +38,12 @@ var player_ref: Node = null
 
 var _lbl_level: Label = null
 var _lbl_xp: Label = null
+var _lbl_points: Label = null
 var _lbl_hp: Label = null
 var _lbl_armor: Label = null
 var _lbl_dmg: Label = null
 var _stat_rows: Dictionary = {}
+var _stat_plus_buttons: Dictionary = {}
 var _skills_grid: GridContainer = null
 
 func _ready() -> void:
@@ -77,6 +79,12 @@ func _toggle() -> void:
 	else:
 		visible = true
 		GameEvents.open_ui()
+		_refresh()
+
+func _on_stat_plus_pressed(stat_name: String) -> void:
+	if stats_ref == null:
+		return
+	if stats_ref.spend_point(stat_name):
 		_refresh()
 
 func force_close() -> void:
@@ -129,6 +137,9 @@ func _build_stats_column() -> VBoxContainer:
 	vbox.add_child(_lbl_level)
 	_lbl_xp = Label.new()
 	vbox.add_child(_lbl_xp)
+	_lbl_points = Label.new()
+	_lbl_points.add_theme_color_override("font_color", Color(0.4, 0.9, 0.4))
+	vbox.add_child(_lbl_points)
 
 	var sep := HSeparator.new()
 	vbox.add_child(sep)
@@ -145,8 +156,17 @@ func _build_stats_column() -> VBoxContainer:
 		desc_lbl.text = str(STAT_DESCS.get(stat_name, ""))
 		desc_lbl.add_theme_font_size_override("font_size", 10)
 		desc_lbl.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+		var plus_btn := Button.new()
+		plus_btn.text = "+"
+		plus_btn.custom_minimum_size = Vector2(28, 0)
+		plus_btn.visible = false
+		var sn := stat_name
+		plus_btn.pressed.connect(func() -> void: _on_stat_plus_pressed(sn))
+		_stat_plus_buttons[stat_name] = plus_btn
+
 		row.mouse_filter = Control.MOUSE_FILTER_STOP
 		row.tooltip_text = str(STAT_TOOLTIPS.get(stat_name, ""))
+		row.add_child(plus_btn)
 		row.add_child(name_lbl)
 		row.add_child(val_lbl)
 		row.add_child(desc_lbl)
@@ -198,10 +218,16 @@ func _refresh() -> void:
 	var lvl: int = int(stats_ref.level)
 	var cur_xp: int = int(stats_ref.xp)
 	var need_xp: int = int(stats_ref.xp_to_next)
+	var points: int = int(stats_ref.stat_points)
 	if _lbl_level != null:
 		_lbl_level.text = "Уровень: %d" % lvl
 	if _lbl_xp != null:
 		_lbl_xp.text = "XP: %d / %d" % [cur_xp, need_xp]
+	if _lbl_points != null:
+		_lbl_points.text = "Очки характеристик: %d" % points if points > 0 else ""
+	for sn: String in _stat_plus_buttons:
+		var btn: Button = _stat_plus_buttons[sn]
+		btn.visible = points > 0
 
 	for stat_name: String in STAT_ORDER:
 		var total: int = int(stats_ref.get_total(stat_name))

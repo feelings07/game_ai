@@ -5,9 +5,15 @@ const TEX_ARROW      := preload("res://assets/sprites/arrow.png")
 const TEX_MAGIC_BOLT := preload("res://assets/sprites/magic_bolt.png")
 const TEX_FIREBALL   := preload("res://assets/sprites/fireball.png")
 const WORLD_ITEM_SCRIPT := preload("res://scripts/world_item.gd")
-const LEASH_MULT := 1.3
-const BAR_WIDTH := 28.0
-const BAR_HEIGHT := 4.0
+
+const LEASH_MULT      := 1.3
+const BAR_WIDTH       := 28.0
+const BAR_HEIGHT      := 4.0
+const TILE            := 32
+const AGGRO_LEASH     := 3000.0   # leash after being hit (practically unlimited)
+const FLEE_DIST       := 95.0     # ranged: back off when player closer than this
+const PATH_INTERVAL   := 0.25     # seconds between path recalculations
+const WAYPOINT_REACH  := 16.0     # pixels to consider waypoint reached
 
 var speed: float = 70.0
 var damage: int = 10
@@ -26,10 +32,15 @@ var _data: Dictionary = {}
 
 var direction: Vector2 = Vector2.RIGHT
 var _aware: bool = false
+var _hit_aggroed: bool = false
 var _can_hit: bool = true
 var _wander_timer: float = 0.0
 var _attack_timer: float = 0.0
 var _hp_fill: ColorRect = null
+
+var _path: PackedVector2Array = PackedVector2Array()
+var _path_idx: int = 0
+var _path_timer: float = 0.0
 
 func _ready() -> void:
 	add_to_group("enemy")
@@ -92,29 +103,53 @@ func _update_health_bar() -> void:
 func _physics_process(delta: float) -> void:
 	if _attack_timer > 0.0:
 		_attack_timer -= delta
+	_path_timer -= delta
 
 	var player := _find_player()
 	var engaged := false
+	var dist := INF
+
 	if player != null:
+		dist = global_position.distance_to(player.global_position)
 		var detect_mult: float = 1.8 if enemy_type == "ranged" else 1.0
-		var leash: float = attack_range * detect_mult * (LEASH_MULT if _aware else 1.0)
-		var dist := global_position.distance_to(player.global_position)
-		if dist <= leash and _has_line_of_sight(player):
+		var base_range := attack_range * detect_mult
+		var leash: float
+		if _hit_aggroed:
+			leash = AGGRO_LEASH
+		elif _aware:
+			leash = base_range * LEASH_MULT
+		else:
+			leash = base_range
+		if dist <= leash and (_hit_aggroed or _has_line_of_sight(player)):
 			engaged = true
 			_aware = true
 		else:
-			_aware = false
+			if not _hit_aggroed:
+				_aware = false
 
-	if engaged:
-		direction = (player.global_position - global_position).normalized()
+	if engaged and player != null:
+		if _path_timer <= 0.0 or _path.is_empty():
+			_path_timer = PATH_INTERVAL
+			_update_path(player.global_position)
+
 		if enemy_type == "ranged":
-			velocity = Vector2.ZERO
-			if _attack_timer <= 0.0:
-				_shoot(player.global_position)
-				_attack_timer = attack_cooldown
+			if dist < FLEE_DIST:
+				# Back away from player, keep facing them
+				var flee_dir := (global_position - player.global_position).normalized()
+				velocity = flee_dir * speed
+				direction = (player.global_position - global_position).normalized()
+			else:
+				velocity = Vector2.ZERO
+				direction = (player.global_position - global_position).normalized()
+				if _attack_timer <= 0.0:
+					_shoot(player.global_position)
+					_attack_timer = attack_cooldown
 		else:
+			direction = _get_move_dir(player.global_position)
 			velocity = direction * speed
 	else:
+		_path.clear()
+		_path_idx = 0
 		_wander_timer -= delta
 		if _wander_timer <= 0.0:
 			_pick_new_direction()
@@ -129,6 +164,37 @@ func _physics_process(delta: float) -> void:
 		$Sprite2D.rotation = velocity.angle()
 	elif engaged:
 		$Sprite2D.rotation = direction.angle()
+
+func _update_path(target_pos: Vector2) -> void:
+	var nav: AStarGrid2D = GameEvents.nav_grid
+	if nav == null:
+		_path.clear()
+		return
+	var from_cell := Vector2i(int(global_position.x / TILE), int(global_position.y / TILE))
+	var to_cell   := Vector2i(int(target_pos.x / TILE), int(target_pos.y / TILE))
+	from_cell = Vector2i(
+		clampi(from_cell.x, 0, nav.region.size.x - 1),
+		clampi(from_cell.y, 0, nav.region.size.y - 1))
+	to_cell = Vector2i(
+		clampi(to_cell.x, 0, nav.region.size.x - 1),
+		clampi(to_cell.y, 0, nav.region.size.y - 1))
+	if nav.is_point_solid(from_cell) or nav.is_point_solid(to_cell):
+		_path.clear()
+		return
+	_path = nav.get_point_path(from_cell, to_cell)
+	_path_idx = 1  # skip first point (we're already there)
+
+func _get_move_dir(target_pos: Vector2) -> Vector2:
+	if _path.is_empty() or _path_idx >= _path.size():
+		return (target_pos - global_position).normalized()
+	var wp: Vector2 = _path[_path_idx]
+	var to_wp := wp - global_position
+	if to_wp.length() < WAYPOINT_REACH:
+		_path_idx += 1
+		if _path_idx >= _path.size():
+			return (target_pos - global_position).normalized()
+		to_wp = _path[_path_idx] - global_position
+	return to_wp.normalized()
 
 func _has_line_of_sight(player: Node2D) -> bool:
 	var space_state := get_world_2d().direct_space_state
@@ -203,6 +269,7 @@ func _start_cooldown() -> void:
 func take_damage(amount: int, from_position: Vector2 = global_position) -> void:
 	health -= amount
 	_aware = true
+	_hit_aggroed = true
 	_update_health_bar()
 	if health <= 0:
 		_grant_xp_and_die()
@@ -253,7 +320,7 @@ func _drop_loot() -> void:
 		var chance: float = float(entry.get("chance", 0.0)) * loot_mult * GradeDB.get_drop_mult(grade)
 		if randf() < chance:
 			var slot: String = str(item.get("slot", ""))
-			if slot != "" and slot != "potion" and item.get("type", "") != "potion":
+			if slot != "" and item.get("type", "") != "potion":
 				if awarded_slots.has(slot):
 					continue
 				awarded_slots[slot] = true

@@ -124,6 +124,7 @@ func _generate_level(is_first: bool) -> void:
 	_spawn_cell    = layout["spawn"]
 	_boss_cell     = layout["boss"]
 	_current_grid  = grid
+	_build_nav_grid()
 
 	_build_all_tiles(grid)
 	_build_background()
@@ -185,6 +186,22 @@ func _generate_level(is_first: bool) -> void:
 
 	if _need_class_select:
 		_show_class_select()
+
+
+# ── Navigation grid ──────────────────────────────────────────────────────────
+
+func _build_nav_grid() -> void:
+	var nav := AStarGrid2D.new()
+	nav.region = Rect2i(0, 0, GRID_W, GRID_H)
+	nav.cell_size = Vector2(TILE, TILE)
+	nav.offset = Vector2(TILE / 2.0, TILE / 2.0)
+	nav.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
+	nav.update()
+	for y in GRID_H:
+		for x in GRID_W:
+			if _current_grid[y * GRID_W + x] != 1:
+				nav.set_point_solid(Vector2i(x, y), true)
+	GameEvents.nav_grid = nav
 
 
 # ── Class selection ───────────────────────────────────────────────────────────
