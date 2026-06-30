@@ -108,6 +108,7 @@ func _physics_process(delta: float) -> void:
 	var player := _find_player()
 	var engaged := false
 	var dist := INF
+	var has_los := false
 
 	if player != null:
 		dist = global_position.distance_to(player.global_position)
@@ -120,9 +121,14 @@ func _physics_process(delta: float) -> void:
 			leash = base_range * LEASH_MULT
 		else:
 			leash = base_range
-		if dist <= leash and (_hit_aggroed or _has_line_of_sight(player)):
-			engaged = true
-			_aware = true
+		if dist <= leash:
+			has_los = _has_line_of_sight(player)
+			if _hit_aggroed or has_los:
+				engaged = true
+				_aware = true
+			else:
+				if not _hit_aggroed:
+					_aware = false
 		else:
 			if not _hit_aggroed:
 				_aware = false
@@ -138,12 +144,16 @@ func _physics_process(delta: float) -> void:
 				var flee_dir := (global_position - player.global_position).normalized()
 				velocity = flee_dir * speed
 				direction = (player.global_position - global_position).normalized()
-			else:
+			elif has_los:
 				velocity = Vector2.ZERO
 				direction = (player.global_position - global_position).normalized()
 				if _attack_timer <= 0.0:
 					_shoot(player.global_position)
 					_attack_timer = attack_cooldown
+			else:
+				# Obstacle blocks LOS — pathfind to find shooting position
+				direction = _get_move_dir(player.global_position)
+				velocity = direction * speed
 		else:
 			direction = _get_move_dir(player.global_position)
 			velocity = direction * speed
