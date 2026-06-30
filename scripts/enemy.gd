@@ -13,7 +13,7 @@ const TILE            := 32
 const AGGRO_LEASH     := 3000.0   # leash after being hit (practically unlimited)
 const FLEE_DIST       := 95.0     # ranged: back off when player closer than this
 const PATH_INTERVAL   := 0.25     # seconds between path recalculations
-const WAYPOINT_REACH  := 16.0     # pixels to consider waypoint reached
+const WAYPOINT_REACH  := 20.0     # pixels to consider waypoint reached
 
 var speed: float = 70.0
 var damage: int = 10
@@ -167,8 +167,17 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
-	if is_on_wall() and not engaged:
-		_pick_new_direction()
+	if is_on_wall():
+		if engaged:
+			# Stuck on a corner — push away from wall and skip current waypoint
+			var wn := get_wall_normal()
+			if wn != Vector2.ZERO:
+				velocity = wn * speed * 0.6
+				move_and_slide()
+			if not _path.is_empty() and _path_idx < _path.size():
+				_path_idx = mini(_path_idx + 1, _path.size() - 1)
+		else:
+			_pick_new_direction()
 
 	if velocity.length() > 0.0:
 		$Sprite2D.rotation = velocity.angle()
@@ -197,6 +206,9 @@ func _update_path(target_pos: Vector2) -> void:
 func _get_move_dir(target_pos: Vector2) -> Vector2:
 	if _path.is_empty() or _path_idx >= _path.size():
 		return (target_pos - global_position).normalized()
+	# String-pulling: skip ahead if next waypoint is already visible
+	while _path_idx + 1 < _path.size() and _can_see_point(_path[_path_idx + 1]):
+		_path_idx += 1
 	var wp: Vector2 = _path[_path_idx]
 	var to_wp := wp - global_position
 	if to_wp.length() < WAYPOINT_REACH:
@@ -205,6 +217,13 @@ func _get_move_dir(target_pos: Vector2) -> Vector2:
 			return (target_pos - global_position).normalized()
 		to_wp = _path[_path_idx] - global_position
 	return to_wp.normalized()
+
+func _can_see_point(pos: Vector2) -> bool:
+	var space_state := get_world_2d().direct_space_state
+	var query := PhysicsRayQueryParameters2D.create(global_position, pos)
+	query.collision_mask = 1
+	query.exclude = [get_rid()]
+	return space_state.intersect_ray(query).is_empty()
 
 func _has_line_of_sight(player: Node2D) -> bool:
 	var space_state := get_world_2d().direct_space_state

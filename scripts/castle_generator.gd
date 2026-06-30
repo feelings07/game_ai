@@ -201,6 +201,25 @@ func _build_nav_grid() -> void:
 		for x in GRID_W:
 			if _current_grid[y * GRID_W + x] != 1:
 				nav.set_point_solid(Vector2i(x, y), true)
+	# Penalise cells adjacent to walls so paths stay away from corners
+	for y in GRID_H:
+		for x in GRID_W:
+			if _current_grid[y * GRID_W + x] != 1:
+				continue
+			var near_wall := false
+			for dx: int in [-1, 0, 1]:
+				for dy: int in [-1, 0, 1]:
+					if dx == 0 and dy == 0:
+						continue
+					var nx: int = x + dx
+					var ny: int = y + dy
+					if nx >= 0 and nx < GRID_W and ny >= 0 and ny < GRID_H:
+						if _current_grid[ny * GRID_W + nx] != 1:
+							near_wall = true
+				if near_wall:
+					break
+			if near_wall:
+				nav.set_point_weight_scale(Vector2i(x, y), 4.0)
 	GameEvents.nav_grid = nav
 
 
