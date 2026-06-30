@@ -1,0 +1,14 @@
+{
+  "rare_chance": 0.15,
+  "bonus_value_min": 1,
+  "bonus_value_max": 3,
+  "bonus_stats": ["strength", "agility", "vitality", "intelligence"],
+  "rarity_colors": {
+    "common": "#d8d8d8",
+    "rare": "#4da6ff"
+  },
+  "rarity_labels": {
+    "common": "Обычное",
+    "rare": "Редкое"
+  }
+}

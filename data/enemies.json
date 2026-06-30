@@ -1,0 +1,324 @@
+[
+  {
+    "id": "goblin",
+    "name": "Гоблин",
+    "type": "melee",
+    "health": 40,
+    "speed": 70,
+    "damage": 10,
+    "attack_range": 120,
+    "attack_cooldown": 0.6,
+    "projectile_speed": 0,
+    "xp_reward": 6,
+    "drop_level_min": 3,
+    "drop_table": [
+      {"id": "potion_health",  "chance": 0.30},
+      {"id": "sword_iron",     "chance": 0.08},
+      {"id": "helmet_leather", "chance": 0.08},
+      {"id": "armor_leather",  "chance": 0.06}
+    ],
+    "sprite_frames": [
+      "res://assets/sprites/enemy_goblin_walk_0.png",
+      "res://assets/sprites/enemy_goblin_walk_1.png",
+      "res://assets/sprites/enemy_goblin_walk_2.png",
+      "res://assets/sprites/enemy_goblin_walk_3.png"
+    ],
+    "attack_frames": [
+      "res://assets/sprites/enemy_goblin_attack_0.png"
+    ]
+  },
+  {
+    "id": "skeleton_archer",
+    "name": "Скелет-лучник",
+    "type": "ranged",
+    "health": 28,
+    "speed": 55,
+    "damage": 8,
+    "attack_range": 240,
+    "attack_cooldown": 1.4,
+    "projectile_speed": 360,
+    "projectile_type": "arrow",
+    "xp_reward": 8,
+    "drop_level_min": 4,
+    "drop_table": [
+      {"id": "potion_health",  "chance": 0.25},
+      {"id": "potion_mana",    "chance": 0.20},
+      {"id": "bow_wood",       "chance": 0.10},
+      {"id": "wand_ice",       "chance": 0.06}
+    ],
+    "sprite_frames": [
+      "res://assets/sprites/enemy_skeleton_walk_0.png",
+      "res://assets/sprites/enemy_skeleton_walk_1.png",
+      "res://assets/sprites/enemy_skeleton_walk_2.png",
+      "res://assets/sprites/enemy_skeleton_walk_3.png"
+    ],
+    "attack_frames": [
+      "res://assets/sprites/enemy_skeleton_attack_0.png"
+    ]
+  },
+  {
+    "id": "castle_boss",
+    "name": "Хранитель замка",
+    "type": "melee",
+    "is_boss": true,
+    "health": 220,
+    "speed": 50,
+    "damage": 26,
+    "attack_range": 170,
+    "attack_cooldown": 0.5,
+    "projectile_speed": 0,
+    "xp_reward": 100,
+    "drop_level_min": 1,
+    "drop_table": [
+      {"id": "potion_health_greater", "chance": 0.80},
+      {"id": "sword_steel",           "chance": 0.50},
+      {"id": "helmet_iron",           "chance": 0.40},
+      {"id": "gloves_iron",           "chance": 0.35}
+    ],
+    "collision_radius": 22,
+    "sprite_frames": [
+      "res://assets/sprites/enemy_boss_walk_0.png",
+      "res://assets/sprites/enemy_boss_walk_1.png",
+      "res://assets/sprites/enemy_boss_walk_2.png",
+      "res://assets/sprites/enemy_boss_walk_3.png"
+    ],
+    "attack_frames": [
+      "res://assets/sprites/enemy_boss_attack_0.png"
+    ]
+  },
+  {
+    "id": "witch_boss",
+    "name": "Лесная ведьма",
+    "type": "ranged",
+    "is_boss": true,
+    "health": 300,
+    "speed": 40,
+    "damage": 22,
+    "attack_range": 320,
+    "attack_cooldown": 1.0,
+    "projectile_speed": 370,
+    "projectile_type": "magic_bolt",
+    "xp_reward": 140,
+    "drop_level_min": 1,
+    "drop_table": [
+      {"id": "potion_health_greater", "chance": 0.80},
+      {"id": "wand_fire",             "chance": 0.50},
+      {"id": "wand_ice",              "chance": 0.45},
+      {"id": "boots_iron",            "chance": 0.35}
+    ],
+    "collision_radius": 20,
+    "sprite_frames": [
+      "res://assets/sprites/enemy_witch_walk_0.png",
+      "res://assets/sprites/enemy_witch_walk_1.png",
+      "res://assets/sprites/enemy_witch_walk_2.png",
+      "res://assets/sprites/enemy_witch_walk_3.png"
+    ],
+    "attack_frames": [
+      "res://assets/sprites/enemy_witch_attack_0.png"
+    ]
+  },
+  {
+    "id": "dragon_boss",
+    "name": "Пещерный дракон",
+    "type": "ranged",
+    "is_boss": true,
+    "health": 480,
+    "speed": 38,
+    "damage": 35,
+    "attack_range": 300,
+    "attack_cooldown": 1.2,
+    "projectile_speed": 350,
+    "projectile_type": "fireball",
+    "xp_reward": 220,
+    "drop_level_min": 1,
+    "drop_table": [
+      {"id": "potion_health_greater", "chance": 0.90},
+      {"id": "axe_battle",            "chance": 0.45},
+      {"id": "armor_iron",            "chance": 0.40},
+      {"id": "wand_lightning",        "chance": 0.30}
+    ],
+    "collision_radius": 28,
+    "sprite_frames": [
+      "res://assets/sprites/enemy_dragon_walk_0.png",
+      "res://assets/sprites/enemy_dragon_walk_1.png",
+      "res://assets/sprites/enemy_dragon_walk_2.png",
+      "res://assets/sprites/enemy_dragon_walk_3.png"
+    ],
+    "attack_frames": [
+      "res://assets/sprites/enemy_dragon_attack_0.png"
+    ]
+  },
+  {
+    "id": "swamp_shaman",
+    "name": "Болотный шаман",
+    "type": "ranged",
+    "health": 35,
+    "speed": 60,
+    "damage": 9,
+    "attack_range": 260,
+    "attack_cooldown": 1.3,
+    "projectile_speed": 340,
+    "projectile_type": "magic_bolt",
+    "xp_reward": 9,
+    "drop_level_min": 5,
+    "drop_table": [
+      {"id": "potion_health",  "chance": 0.28},
+      {"id": "potion_mana",    "chance": 0.25},
+      {"id": "wand_ice",       "chance": 0.08}
+    ],
+    "sprite_frames": [
+      "res://assets/sprites/enemy_shaman_walk_0.png",
+      "res://assets/sprites/enemy_shaman_walk_1.png",
+      "res://assets/sprites/enemy_shaman_walk_2.png",
+      "res://assets/sprites/enemy_shaman_walk_3.png"
+    ],
+    "attack_frames": [
+      "res://assets/sprites/enemy_shaman_attack_0.png"
+    ]
+  },
+  {
+    "id": "swamp_golem",
+    "name": "Болотный голем",
+    "type": "melee",
+    "is_boss": true,
+    "health": 360,
+    "speed": 45,
+    "damage": 30,
+    "attack_range": 140,
+    "attack_cooldown": 0.7,
+    "projectile_speed": 0,
+    "xp_reward": 160,
+    "drop_level_min": 1,
+    "drop_table": [
+      {"id": "potion_health_greater", "chance": 0.80},
+      {"id": "armor_iron",            "chance": 0.45},
+      {"id": "pants_iron",            "chance": 0.40},
+      {"id": "wand_fire",             "chance": 0.35}
+    ],
+    "collision_radius": 24,
+    "sprite_frames": [
+      "res://assets/sprites/enemy_golem_walk_0.png",
+      "res://assets/sprites/enemy_golem_walk_1.png",
+      "res://assets/sprites/enemy_golem_walk_2.png",
+      "res://assets/sprites/enemy_golem_walk_3.png"
+    ],
+    "attack_frames": [
+      "res://assets/sprites/enemy_golem_attack_0.png"
+    ]
+  },
+  {
+    "id": "ghost",
+    "name": "Призрак",
+    "type": "ranged",
+    "health": 25,
+    "speed": 80,
+    "damage": 11,
+    "attack_range": 280,
+    "attack_cooldown": 1.5,
+    "projectile_speed": 380,
+    "projectile_type": "magic_bolt",
+    "xp_reward": 10,
+    "drop_level_min": 5,
+    "drop_table": [
+      {"id": "potion_mana",   "chance": 0.30},
+      {"id": "potion_health", "chance": 0.20},
+      {"id": "wand_ice",      "chance": 0.10}
+    ],
+    "sprite_frames": [
+      "res://assets/sprites/enemy_ghost_walk_0.png",
+      "res://assets/sprites/enemy_ghost_walk_1.png",
+      "res://assets/sprites/enemy_ghost_walk_2.png",
+      "res://assets/sprites/enemy_ghost_walk_3.png"
+    ],
+    "attack_frames": [
+      "res://assets/sprites/enemy_ghost_attack_0.png"
+    ]
+  },
+  {
+    "id": "lich_boss",
+    "name": "Лич",
+    "type": "ranged",
+    "is_boss": true,
+    "health": 420,
+    "speed": 42,
+    "damage": 28,
+    "attack_range": 340,
+    "attack_cooldown": 1.0,
+    "projectile_speed": 400,
+    "projectile_type": "magic_bolt",
+    "xp_reward": 190,
+    "drop_level_min": 1,
+    "drop_table": [
+      {"id": "potion_health_greater", "chance": 0.90},
+      {"id": "wand_lightning",        "chance": 0.50},
+      {"id": "armor_steel",           "chance": 0.40},
+      {"id": "wand_void",             "chance": 0.20}
+    ],
+    "collision_radius": 20,
+    "sprite_frames": [
+      "res://assets/sprites/enemy_lich_walk_0.png",
+      "res://assets/sprites/enemy_lich_walk_1.png",
+      "res://assets/sprites/enemy_lich_walk_2.png",
+      "res://assets/sprites/enemy_lich_walk_3.png"
+    ],
+    "attack_frames": [
+      "res://assets/sprites/enemy_lich_attack_0.png"
+    ]
+  },
+  {
+    "id": "fire_imp",
+    "name": "Огненный бес",
+    "type": "melee",
+    "health": 30,
+    "speed": 90,
+    "damage": 12,
+    "attack_range": 110,
+    "attack_cooldown": 0.5,
+    "projectile_speed": 0,
+    "xp_reward": 7,
+    "drop_level_min": 6,
+    "drop_table": [
+      {"id": "potion_health", "chance": 0.22},
+      {"id": "wand_fire",     "chance": 0.07}
+    ],
+    "sprite_frames": [
+      "res://assets/sprites/enemy_imp_walk_0.png",
+      "res://assets/sprites/enemy_imp_walk_1.png",
+      "res://assets/sprites/enemy_imp_walk_2.png",
+      "res://assets/sprites/enemy_imp_walk_3.png"
+    ],
+    "attack_frames": [
+      "res://assets/sprites/enemy_imp_attack_0.png"
+    ]
+  },
+  {
+    "id": "magma_titan",
+    "name": "Магмовый титан",
+    "type": "melee",
+    "is_boss": true,
+    "health": 520,
+    "speed": 35,
+    "damage": 40,
+    "attack_range": 160,
+    "attack_cooldown": 0.8,
+    "projectile_speed": 0,
+    "xp_reward": 240,
+    "drop_level_min": 1,
+    "drop_table": [
+      {"id": "potion_health_greater", "chance": 0.90},
+      {"id": "sword_mithril",         "chance": 0.45},
+      {"id": "armor_mithril",         "chance": 0.35},
+      {"id": "sword_dragon",          "chance": 0.15}
+    ],
+    "collision_radius": 30,
+    "sprite_frames": [
+      "res://assets/sprites/enemy_magma_walk_0.png",
+      "res://assets/sprites/enemy_magma_walk_1.png",
+      "res://assets/sprites/enemy_magma_walk_2.png",
+      "res://assets/sprites/enemy_magma_walk_3.png"
+    ],
+    "attack_frames": [
+      "res://assets/sprites/enemy_magma_attack_0.png"
+    ]
+  }
+]

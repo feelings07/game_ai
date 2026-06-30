@@ -1,0 +1,19 @@
+{
+  "base": {
+    "strength": 1,
+    "agility": 1,
+    "vitality": 1,
+    "intelligence": 1
+  },
+  "per_point": {
+    "strength_melee_damage": 2,
+    "agility_ranged_damage": 1.5,
+    "agility_cooldown_reduction": 0.02,
+    "vitality_max_health": 8,
+    "intelligence_potion_heal": 3,
+    "intelligence_max_mana": 5,
+    "intelligence_wand_damage": 1.5
+  },
+  "xp_base": 100,
+  "xp_growth": 50
+}

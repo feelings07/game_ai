@@ -1,26 +1,78 @@
-[gd_scene load_steps=4 format=3 uid="uid://main_scene"]
+[gd_scene load_steps=8 format=3]
 
-[ext_resource type="PackedScene" uid="uid://player_scene" path="res://scenes/Player.tscn" id="1"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
-size = Vector2(1280, 64)
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ground"]
-size = Vector2(1280, 64)
+[ext_resource type="PackedScene" path="res://scenes/Player.tscn" id="1"]
+[ext_resource type="Script" path="res://scripts/castle_generator.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/InventoryUI.tscn" id="3"]
+[ext_resource type="Script" path="res://scripts/menu_ui.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/skill_ui.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/minimap.gd" id="6"]
+[ext_resource type="Script" path="res://scripts/potion_bar.gd" id="7"]
+[ext_resource type="Script" path="res://scripts/buff_hud.gd" id="8"]
 
 [node name="Main" type="Node2D"]
-
-[node name="Ground" type="StaticBody2D" parent="."]
-position = Vector2(640, 680)
-
-[node name="Sprite2D" type="Sprite2D" parent="Ground"]
-texture = SubResource("PlaceholderTexture2D_ground")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
-shape = SubResource("RectangleShape2D_ground")
+script = ExtResource("2")
 
 [node name="Player" parent="." instance=ExtResource("1")]
-position = Vector2(200, 600)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position_smoothing_enabled = true
+
+[node name="InventoryUI" parent="." instance=ExtResource("3")]
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="HPLabel" type="Label" parent="HUD"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 220.0
+offset_bottom = 48.0
+theme_override_font_sizes/font_size = 22
+text = "HP: 100/100"
+
+[node name="MPLabel" type="Label" parent="HUD"]
+offset_left = 16.0
+offset_top = 46.0
+offset_right = 220.0
+offset_bottom = 78.0
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.45, 0.55, 1, 1)
+text = "MP: 50/50"
+
+[node name="MenuUI" type="CanvasLayer" parent="."]
+script = ExtResource("4")
+
+[node name="SkillUI" type="CanvasLayer" parent="."]
+script = ExtResource("5")
+
+[node name="Minimap" type="Control" parent="HUD"]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_top = 0.0
+anchor_bottom = 0.0
+offset_left = -210.0
+offset_right = -10.0
+offset_top = 10.0
+offset_bottom = 138.0
+script = ExtResource("6")
+
+[node name="PotionBar" type="Control" parent="HUD"]
+anchor_left = 0.0
+anchor_right = 0.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = 200.0
+offset_top = -90.0
+offset_bottom = -10.0
+script = ExtResource("7")
+
+[node name="BuffHud" type="Control" parent="HUD"]
+anchor_left = 0.0
+anchor_right = 0.0
+anchor_top = 0.0
+anchor_bottom = 0.0
+offset_left = 10.0
+offset_right = 260.0
+offset_top = 80.0
+offset_bottom = 200.0
+script = ExtResource("8")
